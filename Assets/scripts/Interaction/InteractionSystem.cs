@@ -18,7 +18,7 @@ public class InteractionSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("it works!");
+            Debug.Log("it works correctly!");
             if (data.HitTransform)
             {
                 var component = data.HitTransform.GetComponent<IInteractable>();
