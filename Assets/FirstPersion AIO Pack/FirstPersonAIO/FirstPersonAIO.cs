@@ -247,7 +247,10 @@ public class FirstPersonAIO : MonoBehaviour {
     #endregion
 
     private void Awake(){
+       //  if (!hasAuthority){ return;}
+       //  if (isLocalPlayer){
         #region Look Settings - Awake
+        OnDisableCamera();
         originalRotation = transform.localRotation.eulerAngles;
 
         #endregion 
@@ -268,12 +271,15 @@ public class FirstPersonAIO : MonoBehaviour {
         #region Headbobbing Settings - Awake
 
         #endregion
-
+       //    }
     }
 
     private void Start(){
+      //  if (!hasAuthority){ return;}
+      //    if (isLocalPlayer){
         #region Look Settings - Start
 
+        OnDisableCamera();
         if(autoCrosshair || drawStaminaMeter){
             Canvas canvas = new GameObject("AutoCrosshair").AddComponent<Canvas>();
             canvas.gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -333,12 +339,18 @@ public class FirstPersonAIO : MonoBehaviour {
         previousPosition = fps_Rigidbody.position;
         audioSource = GetComponent<AudioSource>();
         #endregion
+      //   }
     }
 
     private void Update(){
 
+     //  if (!hasAuthority){ return;}
+
+     //  if (isLocalPlayer){
+
         #region Look Settings - Update
 
+            OnDisableCamera();
             if(enableCameraMovement && !controllerPauseState){
             float mouseYInput = 0;
             float mouseXInput = 0;
@@ -384,11 +396,13 @@ public class FirstPersonAIO : MonoBehaviour {
         #region Headbobbing Settings - Update
 
         #endregion
-
+       // }
     }
 
     private void FixedUpdate(){
+     //   if (!hasAuthority){ return;}
 
+     //  if (isLocalPlayer){
         #region Look Settings - FixedUpdate
 
         #endregion
@@ -717,11 +731,13 @@ public class FirstPersonAIO : MonoBehaviour {
             advanced.isTouchingFlat = false;
         }
         #endregion
+      // }
     }
 
  
 
     public IEnumerator CameraShake(float Duration, float Magnitude){
+        OnDisableCamera();
         float elapsed =0;
         while(elapsed<Duration && enableCameraShake){
             playerCamera.transform.localPosition =Vector3.MoveTowards(playerCamera.transform.localPosition, new Vector3(cameraStartingPosition.x+ Random.Range(-1,1)*Magnitude,cameraStartingPosition.y+Random.Range(-1,1)*Magnitude,cameraStartingPosition.z), Magnitude*2);
@@ -732,12 +748,21 @@ public class FirstPersonAIO : MonoBehaviour {
         playerCamera.transform.localPosition = cameraStartingPosition;
     }
 
+   // [Command]
     public void RotateCamera(Vector2 Rotation, bool Snap){
+        OnDisableCamera();
         enableCameraMovement = !enableCameraMovement;
         if(Snap){followAngles = Rotation;targetAngles = Rotation;}else{targetAngles = Rotation;}
         enableCameraMovement = !enableCameraMovement;
     }
 
+    void OnDisableCamera(){
+        if (playerCamera!=null){
+            playerCamera.gameObject.SetActive(true);
+        }
+    }
+
+     //[Command]
     public void ControllerPause(){
         controllerPauseState = !controllerPauseState;
         if(lockAndHideCursor){
@@ -757,7 +782,7 @@ public class FirstPersonAIO : MonoBehaviour {
     }
 
 
-
+    
     private void OnCollisionEnter(Collision CollisionData){
         for(int i = 0; i<CollisionData.contactCount; i++){
                 float a = Vector3.Angle(CollisionData.GetContact(i).normal, Vector3.up);
@@ -780,6 +805,8 @@ public class FirstPersonAIO : MonoBehaviour {
             }
         }
     }
+
+    
     private void OnCollisionStay(Collision CollisionData) {
         
             for(int i = 0; i<CollisionData.contactCount; i++){
@@ -802,6 +829,8 @@ public class FirstPersonAIO : MonoBehaviour {
             }
         }
     }
+
+    
     private void OnCollisionExit(Collision CollisionData) {
         IsGrounded = false;
         if(advanced.maxSlopeAngle>0){advanced.curntGroundNormal = Vector3.up; advanced.lastKnownSlopeAngle = 0; advanced.isTouchingWalkable = false; advanced.isTouchingUpright = false;}
