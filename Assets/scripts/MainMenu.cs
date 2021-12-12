@@ -5,6 +5,7 @@ using Mirror;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private RTSNetworkManager networkManager = null;
     [SerializeField] private GameObject landingPagePanel = null;
 
     public void HostLobby()
