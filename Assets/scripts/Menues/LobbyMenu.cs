@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class LobbyMenu : MonoBehaviour
 {
     [SerializeField] private GameObject lobbyUI = null;
+    
 
     private void Start()
     {
@@ -24,6 +25,10 @@ public class LobbyMenu : MonoBehaviour
         lobbyUI.SetActive(true);
     }
 
+    public void StartGame()
+    {
+        NetworkClient.connection.identity.GetComponent<NetworkRoomPlayer>().CmdStartGame();
+    }
     public void LeaveLobby()
     {
         if (NetworkServer.active && NetworkClient.isConnected)

@@ -121,4 +121,11 @@ public class NetworkRoomPlayer : NetworkBehaviour
 
             // Start Game
         }
+
+        [Server]
+        public void SetDisplayName(string DisplayName)
+        {
+        this.DisplayName = DisplayName;
+        }
+
 }

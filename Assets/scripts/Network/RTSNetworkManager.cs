@@ -29,6 +29,11 @@ public class RTSNetworkManager : NetworkManager
         ClientOnDisconnected?.Invoke();
     }
 
+    public override void OnStopClient()
+    {
+        RoomPlayers.Clear();
+    }
+
     public override void OnServerConnect(NetworkConnection conn)
     {
         if (numPlayers >= maxConnections)
@@ -95,5 +100,6 @@ public class RTSNetworkManager : NetworkManager
 
         return true;
     }   
+
 
 }
