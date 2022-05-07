@@ -25,7 +25,7 @@ public class JoinLobbyMenu : MonoBehaviour
         RTSNetworkManager.ClientOnDisconnected -= HandleClientDisconnected;
     }
 
-    public void Join()
+    public void JoinLobby()
     {
         string address = addressInput.text;
 
