@@ -1,117 +1,92 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System; 
-using System.Linq;
-
 
 public class RTSNetworkManager : NetworkManager
 {
-    [SerializeField] private int minPlayers = 2;
-    [Scene] [SerializeField] private string menuScene = string.Empty;
-   
 
-    [Header("Room")]
-    [SerializeField] private NetworkRoomPlayer roomPlayerPrefab = null;
     public static event Action ClientOnConnected;
     public static event Action ClientOnDisconnected;
 
-    public List<NetworkRoomPlayer> RoomPlayers { get; } = new List<NetworkRoomPlayer>();
+    private bool isGameInProgress = false;
 
-    public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+    public List<RTSPlayer> Players { get; } = new List<RTSPlayer>();
 
-    public override void OnStartClient()
-        {
-            var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
+    #region Server
 
-            foreach (var prefab in spawnablePrefabs)
-            {
-                NetworkClient.RegisterPrefab(prefab);
-            }
-        }
+    public override void OnServerConnect(NetworkConnection conn)
+    {
+        if (!isGameInProgress) { return; }
 
-        public override void OnClientConnect(NetworkConnection conn)
-        {
-            base.OnClientConnect(conn);
-            ClientOnConnected?.Invoke();
-        }
+        conn.Disconnect();
+    }
 
-        public override void OnClientDisconnect(NetworkConnection conn)
-        {
-            base.OnClientDisconnect(conn);
-            ClientOnDisconnected?.Invoke();
-        }
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        RTSPlayer player = conn.identity.GetComponent<RTSPlayer>();
 
-        public override void OnServerConnect(NetworkConnection conn)
-        {
-            if (numPlayers >= maxConnections)
-            {
-                conn.Disconnect();
-                return;
-            }
-            if (SceneManager.GetActiveScene().path != menuScene)
-            {
-                conn.Disconnect();
-                return;
-            }
-        }   
-        
-           
-    public override void OnServerAddPlayer(NetworkConnection conn) 
-        {
-            if (SceneManager.GetActiveScene().path == menuScene)
-            {
-                
-                bool isLeader = RoomPlayers.Count == 0;
+        Players.Remove(player);
 
-                NetworkRoomPlayer roomPlayerInstance = Instantiate(roomPlayerPrefab);
+        base.OnServerDisconnect(conn);
+    }
 
-                roomPlayerInstance.IsLeader = isLeader;
+    public override void OnStopServer()
+    {
+        Players.Clear();
 
-                NetworkServer.AddPlayerForConnection(conn, roomPlayerInstance.gameObject);
-            }
-        }
+        isGameInProgress = false;
+    }
 
-        public override void OnServerDisconnect(NetworkConnection conn)
-        {
-            if (conn.identity != null)
-            {
-                var player = conn.identity.GetComponent<NetworkRoomPlayer>();
+    public void StartGame()
+    {
+        if (Players.Count < 2) { return; }
 
-                RoomPlayers.Remove(player);
+        isGameInProgress = true;
 
-                NotifyPlayersOfReadyState();
-            }
+        ServerChangeScene("First");
+    }
 
-            base.OnServerDisconnect(conn);
-        }
+    public override void OnServerAddPlayer(NetworkConnection conn)
+    {
+        base.OnServerAddPlayer(conn);
 
-        public override void OnStopServer()
-        {
-            RoomPlayers.Clear();
-        }
+        RTSPlayer player = conn.identity.GetComponent<RTSPlayer>();
 
-        public void NotifyPlayersOfReadyState()
-        {
-            foreach (var player in RoomPlayers)
-            {
-                player.HandleReadyToStart(IsReadyToStart());
-            }
-        }
+        Players.Add(player);
 
-        private bool IsReadyToStart()
-        {
-            if (numPlayers < minPlayers) { return false; }
-
-            foreach (var player in RoomPlayers)
-            {
-                if (!player.IsReady) { return false; }
-            }
-
-            return true;
-        }  
+        player.SetDisplayName($"Player {Players.Count}");
 
 
+        player.SetPartyOwner(Players.Count == 1);
+    }
+
+
+
+    #endregion
+
+    #region Client
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        base.OnClientConnect(conn);
+
+        ClientOnConnected?.Invoke();
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        base.OnClientDisconnect(conn);
+
+        ClientOnDisconnected?.Invoke();
+    }
+
+    public override void OnStopClient()
+    {
+        Players.Clear();
+    }
+
+    #endregion
 }
