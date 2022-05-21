@@ -65,10 +65,11 @@ using Mirror;
     using System.Net;
 #endif
 
-[RequireComponent(typeof(CapsuleCollider)),RequireComponent(typeof(Rigidbody)),AddComponentMenu("First Person AIO")]
+[RequireComponent(typeof(CapsuleCollider)), RequireComponent(typeof(Rigidbody)), AddComponentMenu("First Person AIO")]
 
-public class FirstPersonAIO : MonoBehaviour {
+public class FirstPersonAIO : NetworkBehaviour {
 
+    [SerializeField] [SyncVar] public bool sg;
 
     #region Variables
 
@@ -78,21 +79,23 @@ public class FirstPersonAIO : MonoBehaviour {
 
     #region Look Settings
     public bool enableCameraMovement = true;
-    public enum InvertMouseInput{None,X,Y,Both}
+    public enum InvertMouseInput { None, X, Y, Both }
     public InvertMouseInput mouseInputInversion = InvertMouseInput.None;
-    public enum CameraInputMethod{Traditional, TraditionalWithConstraints, Retro}
-    public CameraInputMethod cameraInputMethod =CameraInputMethod.Traditional;
+    public enum CameraInputMethod { Traditional, TraditionalWithConstraints, Retro }
+    public CameraInputMethod cameraInputMethod = CameraInputMethod.Traditional;
 
     public float verticalRotationRange = 170;
-    public float mouseSensitivity = 10;
-    public  float   fOVToMouseSensitivity = 1;
+    [SyncVar] public float mouseSensitivity = 10;
+    public float fOVToMouseSensitivity = 1;
     public float cameraSmoothing = 5f;
     public bool lockAndHideCursor = false;
     public Camera playerCamera;
-    public bool enableCameraShake=false;
+    public bool enableCameraShake = false;
     internal Vector3 cameraStartingPosition;
     float baseCamFOV;
-    
+
+
+    public GameObject lobbyPanel;
 
     public bool autoCrosshair = false;
     public bool drawStaminaMeter = true;
@@ -110,7 +113,7 @@ public class FirstPersonAIO : MonoBehaviour {
 
     public bool playerCanMove = true;
     public bool walkByDefault = true;
-    public float walkSpeed = 4f;
+    [SyncVar] public float walkSpeed = 4f;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public float sprintSpeed = 8f;
     public float jumpPower = 5f;
@@ -136,7 +139,7 @@ public class FirstPersonAIO : MonoBehaviour {
         public float crouchJumpPowerMultiplier = 0f;
         public bool crouchOverride;
         internal float colliderHeight;
-        
+
     }
     public CrouchModifiers _crouchModifiers = new CrouchModifiers();
 
@@ -159,7 +162,7 @@ public class FirstPersonAIO : MonoBehaviour {
         public float FOVKickAmount = 2.5f;
         public float changeTime = 0.75f;
         public float fovRef;
-        
+
     }
     public AdvancedSettings advanced = new AdvancedSettings();
     private CapsuleCollider capsule;
@@ -181,8 +184,8 @@ public class FirstPersonAIO : MonoBehaviour {
     public float headbobFrequency = 1.5f;
     public float headbobSwayAngle = 5f;
     public float headbobHeight = 3f;
-    public float headbobSideMovement =5f;  
-    public float jumpLandIntensity =3f;
+    public float headbobSideMovement = 5f;
+    public float jumpLandIntensity = 3f;
     private Vector3 originalLocalPosition;
     private float nextStepTime = 0.5f;
     private float headbobCycle = 0.0f;
@@ -208,12 +211,12 @@ public class FirstPersonAIO : MonoBehaviour {
     public AudioClip jumpSound = null;
     public AudioClip landSound = null;
     public List<AudioClip> footStepSounds = null;
-    public enum FSMode{Static, Dynamic}
+    public enum FSMode { Static, Dynamic }
     public FSMode fsmode;
- 
+
     [System.Serializable]
-    public class DynamicFootStep{
-        public enum matMode{physicMaterial,Material};
+    public class DynamicFootStep {
+        public enum matMode { physicMaterial, Material };
         public matMode materialMode;
         public List<PhysicMaterial> woodPhysMat;
         public List<PhysicMaterial> metalAndGlassPhysMat;
@@ -246,9 +249,9 @@ public class FirstPersonAIO : MonoBehaviour {
 
     #endregion
 
-    private void Awake(){
-       //  if (!hasAuthority){ return;}
-       //  if (isLocalPlayer){
+    private void Awake() {
+        //  if (!hasAuthority){ return;}
+        //  if (isLocalPlayer){
         #region Look Settings - Awake
         OnDisableCamera();
         originalRotation = transform.localRotation.eulerAngles;
@@ -271,8 +274,17 @@ public class FirstPersonAIO : MonoBehaviour {
         #region Headbobbing Settings - Awake
 
         #endregion
-       //    }
+        //    }
     }
+
+    public void StartGame() 
+    {
+        sg = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        mouseSensitivity = 10;
+        walkSpeed = 4;
+    } 
 
     private void Start(){
       //  if (!hasAuthority){ return;}
@@ -344,13 +356,19 @@ public class FirstPersonAIO : MonoBehaviour {
 
     private void Update(){
 
-     //  if (!hasAuthority){ return;}
+        if (sg){
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            mouseSensitivity = 10;
+            walkSpeed = 4;
+        }
+        //  if (!hasAuthority){ return;}
 
-     //  if (isLocalPlayer){
+        //  if (isLocalPlayer){
 
         #region Look Settings - Update
 
-            OnDisableCamera();
+        OnDisableCamera();
             if(enableCameraMovement && !controllerPauseState){
             float mouseYInput = 0;
             float mouseXInput = 0;
@@ -453,7 +471,6 @@ public class FirstPersonAIO : MonoBehaviour {
         MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * walkSpeedInternal);
         }
 
-        
             #region step logic
                 RaycastHit WT;
                 if(advanced.maxStepHeight > 0 && Physics.Raycast(transform.position - new Vector3(0,((capsule.height/2)*transform.localScale.y)-0.01f,0),MoveDirection,out WT,capsule.radius+0.15f,Physics.AllLayers,QueryTriggerInteraction.Ignore) && Vector3.Angle(WT.normal, Vector3.up)>88){
@@ -958,7 +975,7 @@ public class FirstPersonAIO : MonoBehaviour {
             if(t.cameraInputMethod == FirstPersonAIO.CameraInputMethod.Traditional){t.verticalRotationRange = EditorGUILayout.Slider(new GUIContent("Vertical Rotation Range","Determines how much range does the camera have to move vertically."),t.verticalRotationRange,90,180);}
             if(t.cameraInputMethod == FirstPersonAIO.CameraInputMethod.Traditional || t.cameraInputMethod == FirstPersonAIO.CameraInputMethod.TraditionalWithConstraints){
             t.mouseInputInversion = (FirstPersonAIO.InvertMouseInput)EditorGUILayout.EnumPopup(new GUIContent("Mouse Input Inversion","Determines if mouse input should be inverted, and along which axes"),t.mouseInputInversion);
-            t.mouseSensitivity = EditorGUILayout.Slider(new GUIContent("Mouse Sensitivity","Determines how sensitive the mouse is."),t.mouseSensitivity, 1,15);
+            t.mouseSensitivity = EditorGUILayout.Slider(new GUIContent("Mouse Sensitivity","Determines how sensitive the mouse is."),t.mouseSensitivity, 0,15);
             t.fOVToMouseSensitivity = EditorGUILayout.Slider(new GUIContent("FOV to Mouse Sensitivity","Determines how much the camera's Field Of View will effect the mouse sensitivity. \n\n0 = no effect, 1 = full effect on sensitivity."),t.fOVToMouseSensitivity,0,1);
             }else{
                 t.mouseSensitivity = EditorGUILayout.Slider(new GUIContent("Rotation Speed","Determines how fast the camera spins when turning the camera."),t.mouseSensitivity, 1,15);
@@ -981,7 +998,7 @@ public class FirstPersonAIO : MonoBehaviour {
             t.playerCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Player Movement","Determines if the player is allowed to move."),t.playerCanMove);
             GUI.enabled = t.playerCanMove;
             t.walkByDefault = EditorGUILayout.ToggleLeft(new GUIContent("Walk By Default","Determines if the default mode of movement is 'Walk' or 'Srpint'."),t.walkByDefault);
-            t.walkSpeed = EditorGUILayout.Slider(new GUIContent("Walk Speed","Determines how fast the player walks."),t.walkSpeed,0.1f,10);
+            t.walkSpeed = EditorGUILayout.Slider(new GUIContent("Walk Speed","Determines how fast the player walks."),t.walkSpeed,0f,10);
             t.sprintKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Sprint Key","Determines what key needs to be pressed to enter a sprint"),t.sprintKey);
             t.sprintSpeed = EditorGUILayout.Slider(new GUIContent("Sprint Speed","Determines how fast the player sprints."),t.sprintSpeed,0.1f,20);
             t.canJump = EditorGUILayout.ToggleLeft(new GUIContent("Can Player Jump?","Determines if the player is allowed to jump."),t.canJump);
