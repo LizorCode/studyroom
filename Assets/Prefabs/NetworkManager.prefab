@@ -78,9 +78,10 @@ MonoBehaviour:
   onlineScene: 
   transport: {fileID: 912874393860420464}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 4
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 1452489812557203989, guid: aced7feb01f98354cb588fbb8cb2acd6, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
+  gamePlayerPrefab: {fileID: 457942008861125646, guid: 8a9cffb7ac43b574fa411bc377c31e87, type: 3}

@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="InteractionSystem">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQABAAAACAAAAAAAAAAAABAAAAAAAAAAACQAAQAAAA=</HashCode>
+      <FileName>Assets\scripts\Interaction\InteractionSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RaycastData">
+    <Position X="11.25" Y="3" Width="1.5" />
+    <InheritanceLine Type="UnityEngine.ScriptableObject" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.25" Y="2.441" />
+        <Point X="12.25" Y="2.815" />
+        <Point X="12" Y="2.815" />
+        <Point X="12" Y="3" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAABAAAACIAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\Interaction\RaycastData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Note">
+    <Position X="11.25" Y="9" Width="1.5" />
+    <InheritanceLine Type="UnityEngine.ScriptableObject" ManuallyRouted="true">
+      <Path>
+        <Point X="12.25" Y="2.441" />
+        <Point X="12.25" Y="2.816" />
+        <Point X="13.322" Y="2.816" />
+        <Point X="13.322" Y="8.846" />
+        <Point X="12" Y="8.846" />
+        <Point X="12" Y="9" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAECAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\Note.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NoteData">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAEAAABAAAAAAIQQAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\NoteData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NoteSystem">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EgSwAAAgCCAgIgIAAAAAIQBkEAAACACIIAAADwCIGAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\NoteSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Page">
+    <Position X="11.25" Y="5.5" Width="1.5" />
+    <InheritanceLine Type="UnityEngine.ScriptableObject" ManuallyRouted="true">
+      <Path>
+        <Point X="12.25" Y="2.441" />
+        <Point X="12.25" Y="2.816" />
+        <Point X="13.009" Y="2.816" />
+        <Point X="13.009" Y="5.37" />
+        <Point X="12" Y="5.37" />
+        <Point X="12" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACCAABAggIAQIACAAAAAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\Page.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.MonoBehaviour" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="UnityEngine.ScriptableObject" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="NotePickUp">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\NotePickUp.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="UIElements">
+    <Position X="4.25" Y="7.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAIAKAAAAAAQAAAEECABJAIgAQICAAACQAACAEACAig=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\NoteSystem.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="IInteractable">
+    <Position X="4.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\Interaction\Interfaces.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="PageType">
+    <Position X="4" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIACAAAAAA=</HashCode>
+      <FileName>Assets\scripts\NotesSystem\Page.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

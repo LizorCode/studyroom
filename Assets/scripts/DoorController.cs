@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
-public class DoorController : NetworkBehaviour
+public class DoorController : MonoBehaviour
 {
     public float distance = 2f;
 
-    [Command]
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))

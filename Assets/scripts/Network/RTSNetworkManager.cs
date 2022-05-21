@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class RTSNetworkManager : NetworkManager
 {
+    // [Header("Game")]
+    [SerializeField] private GameObject gamePlayerPrefab = null;
 
     public static event Action ClientOnConnected;
     public static event Action ClientOnDisconnected;
@@ -14,6 +16,7 @@ public class RTSNetworkManager : NetworkManager
     private bool isGameInProgress = false;
 
     public List<RTSPlayer> Players { get; } = new List<RTSPlayer>();
+    // public List <GameObject> GamePlayers { get; } = new List<GameObject>();
 
     #region Server
 
@@ -47,6 +50,25 @@ public class RTSNetworkManager : NetworkManager
         isGameInProgress = true;
 
         ServerChangeScene("First");
+    }
+
+    public override void OnServerSceneChanged(string newSceneName)
+    {
+        // From menu to game
+        if (SceneManager.GetActiveScene().name.StartsWith("First"))
+        {   
+            Debug.Log("work1");
+            for (int i = Players.Count - 1; i >= 0; i--)
+            {
+                var conn = Players[i].connectionToClient;
+                var gameplayerInstance = Instantiate(gamePlayerPrefab);
+                
+                NetworkServer.Destroy(conn.identity.gameObject);
+
+                NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
+            }
+        }
+
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NotePickUp : MonoBehaviour, IInteractable
+public class NotePickUp : MonoBehaviour , IInteractable
 {
     [SerializeField] Note note = null;
     [SerializeField] bool autoDisplay = false;
@@ -11,12 +11,13 @@ public class NotePickUp : MonoBehaviour, IInteractable
     {
         if (autoDisplay)
         {
-            NoteSystem.Display(note);
+            NoteSystem.Display(note);  //показать список лекций
         }
         if (add)
         {
-            NoteSystem.AddNote(note.Label, note);
-            Destroy(gameObject);
+            NoteSystem.AddNote(note.Label, note);       //добавить лекцию
+            Destroy(gameObject);    //удалить объект
         }
     }
 }
+
