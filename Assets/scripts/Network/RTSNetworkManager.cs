@@ -13,7 +13,10 @@ public class RTSNetworkManager : NetworkManager
 
     private bool isGameInProgress = false;
 
-    public List<RTSPlayer> Players { get; } = new List<RTSPlayer>();
+    public List<RTSPlayer> Players = new List<RTSPlayer>();
+
+    public GameObject _lobbyPanel;
+
 
     #region Server
 

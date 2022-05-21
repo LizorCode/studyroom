@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class door : MonoBehaviour
+public class door : NetworkBehaviour
 {
     [SerializeField]
     float openDoor;
@@ -10,17 +11,14 @@ public class door : MonoBehaviour
     float closeDoor;
     [SerializeField]
     float speed = 1;
+    [SyncVar, SerializeField]
+    float rotate;
 
-    public bool isOpen;
-    // Start is called before the first frame update
-    void Start()
-    {
+    [SyncVar] public bool isOpen;
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
+
         if (isOpen)
         {
             OpenDoor();
@@ -29,17 +27,18 @@ public class door : MonoBehaviour
         {
             CloseDoor();
         }
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(transform.rotation.x, rotate, transform.rotation.z), speed * Time.deltaTime);
     }
 
-    void OpenDoor()
+    public void OpenDoor()
     {
-        transform.rotation = Quaternion.Slerp(transform.rotation,
-            Quaternion.Euler(transform.rotation.x, openDoor, transform.rotation.z), speed * Time.deltaTime);
+        rotate = openDoor;
     }
 
     void CloseDoor()
     {
-        transform.rotation = Quaternion.Slerp(transform.rotation,
-            Quaternion.Euler(transform.rotation.x, closeDoor, transform.rotation.z), speed * Time.deltaTime);
+        rotate = closeDoor;
     }
+
 }

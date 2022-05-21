@@ -6,11 +6,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LobbyMenu : MonoBehaviour
+public class LobbyMenu : NetworkBehaviour
 {
     [SerializeField] private GameObject lobbyUI = null;
     [SerializeField] private Button startGameButton = null;
     [SerializeField] private TMP_Text[] playerNameTexts = new TMP_Text[4];
+
+    [SyncVar,SerializeField] private bool sg;
+    [SerializeField] private GameObject lobbyPanel;
 
     private void Start()
     {
@@ -24,6 +27,19 @@ public class LobbyMenu : MonoBehaviour
         RTSNetworkManager.ClientOnConnected -= HandleClientConnected;
         RTSPlayer.AuthorityOnPartyOwnerStateUpdated -= AuthorityHandlePartyOwnerStateUpdated;
         RTSPlayer.ClientOnInfoUpdated -= ClientHandleInfoUpdated;
+    }
+
+    private void Update()
+    {
+        if (sg)
+        {
+            lobbyPanel.SetActive(false);
+            foreach (RTSPlayer player in ((RTSNetworkManager)NetworkManager.singleton).Players)
+            {
+                player.StartGame();
+            }
+        }
+
     }
 
     private void HandleClientConnected()
@@ -55,7 +71,12 @@ public class LobbyMenu : MonoBehaviour
 
     public void StartGame()
     {
-        NetworkClient.connection.identity.GetComponent<RTSPlayer>().CmdStartGame();
+        //NetworkClient.connection.identity.GetComponent<RTSPlayer>().CmdStartGame();
+        foreach(RTSPlayer player in ((RTSNetworkManager)NetworkManager.singleton).Players) 
+        {
+            player.StartGame();
+        }
+        sg = true;
     }
 
     public void LeaveLobby()

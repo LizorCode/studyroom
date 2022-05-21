@@ -27,6 +27,10 @@ public class RTSPlayer : NetworkBehaviour
     }
 
 
+    public void StartGame() 
+    {
+        GetComponent<FirstPersonAIO>().StartGame();
+    }
 
     #region Server
 
