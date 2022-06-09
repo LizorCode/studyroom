@@ -13,7 +13,7 @@ public class RTSPlayer : NetworkBehaviour
     private string displayName;
 
     public static event Action ClientOnInfoUpdated;
-    public static event Action<bool> AuthorityOnPartyOwnerStateUpdated;
+    public static event Action <bool> AuthorityOnPartyOwnerStateUpdated;
 
 
     public string GetDisplayName()
@@ -35,8 +35,6 @@ public class RTSPlayer : NetworkBehaviour
     #region Server
 
 
-
-    
     public void SetDisplayName(string displayName)
     {
         this.displayName = displayName;
@@ -49,7 +47,6 @@ public class RTSPlayer : NetworkBehaviour
     }
 
     
-
     [Command]
     public void CmdStartGame()
     {
@@ -93,12 +90,12 @@ public class RTSPlayer : NetworkBehaviour
         ClientOnInfoUpdated?.Invoke();
     }
 
-    private void AuthorityHandlePartyOwnerStateUpdated(bool oldState, bool newState)
-    {
-        if (!hasAuthority) { return; }
+     private void AuthorityHandlePartyOwnerStateUpdated(bool oldState, bool newState)
+     {
+         if (!hasAuthority) { return; }
 
-        AuthorityOnPartyOwnerStateUpdated?.Invoke(newState);
-    }
+         AuthorityOnPartyOwnerStateUpdated?.Invoke(newState);
+     }
 
 
 

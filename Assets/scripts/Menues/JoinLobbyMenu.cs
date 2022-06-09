@@ -23,7 +23,7 @@ public class JoinLobbyMenu : MonoBehaviour
         RTSNetworkManager.ClientOnDisconnected -= HandleClientDisconnected;
     }
 
-    public void Join()
+    public void Join() //подключение клиента к серверу
     {
         string address = addressInput.text;
 
@@ -33,16 +33,16 @@ public class JoinLobbyMenu : MonoBehaviour
         joinButton.interactable = false;
     }
 
-    private void HandleClientConnected()
+    private void HandleClientConnected() 
     {
-        joinButton.interactable = true;
+        joinButton.interactable = true; //можно использовать кнопку присоединиться
 
-        gameObject.SetActive(false);
-        landingPagePanel.SetActive(false);
+        gameObject.SetActive(false); //сделать кнопку активной
+        landingPagePanel.SetActive(false); //деактивировать основную форму
     }
 
     private void HandleClientDisconnected()
     {
-        joinButton.interactable = true;
+        joinButton.interactable = true; //можно использовать кнопку присоединиться
     }
 }

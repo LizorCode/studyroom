@@ -29,7 +29,8 @@ public class LobbyMenu : NetworkBehaviour
         RTSPlayer.ClientOnInfoUpdated -= ClientHandleInfoUpdated;
     }
 
-    private void Update()
+    private void Update() 
+
     {
         if (sg)
         {
@@ -42,12 +43,12 @@ public class LobbyMenu : NetworkBehaviour
 
     }
 
-    private void HandleClientConnected()
+    private void HandleClientConnected() //активировать форму комнаты ожидания
     {
         lobbyUI.SetActive(true);
     }
 
-    private void ClientHandleInfoUpdated()
+    private void ClientHandleInfoUpdated() //обновление текстовых полей в комнате ожидания
     {
         List<RTSPlayer> players = ((RTSNetworkManager)NetworkManager.singleton).Players;
 
@@ -58,20 +59,19 @@ public class LobbyMenu : NetworkBehaviour
 
         for (int i = players.Count; i < playerNameTexts.Length; i++)
         {
-            playerNameTexts[i].text = "Waiting For Player...";
+            playerNameTexts[i].text = "Waiting for student...";
         }
 
-        startGameButton.interactable = players.Count >= 2;
+        startGameButton.interactable = players.Count >= 2; //активировать кнопку старт, если пользователей больше 2
     }
 
-    private void AuthorityHandlePartyOwnerStateUpdated(bool state)
+    private void AuthorityHandlePartyOwnerStateUpdated(bool state) //активация кнопки старт
     {
         startGameButton.gameObject.SetActive(state);
     }
 
-    public void StartGame()
+    public void StartGame() //переход в 3D режим
     {
-        //NetworkClient.connection.identity.GetComponent<RTSPlayer>().CmdStartGame();
         foreach(RTSPlayer player in ((RTSNetworkManager)NetworkManager.singleton).Players) 
         {
             player.StartGame();
@@ -79,7 +79,7 @@ public class LobbyMenu : NetworkBehaviour
         sg = true;
     }
 
-    public void LeaveLobby()
+    public void LeaveLobby() // вернуться в главное меню
     {
         if (NetworkServer.active && NetworkClient.isConnected)
         {
@@ -88,8 +88,9 @@ public class LobbyMenu : NetworkBehaviour
         else
         {
             NetworkManager.singleton.StopClient();
-
-            SceneManager.LoadScene(0);
         }
+        
+        SceneManager.LoadScene(0);
+        
     }
 }

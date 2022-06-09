@@ -42,67 +42,36 @@ public class RTSNetworkManager : NetworkManager
     public override void OnStopServer()
     {
         Players.Clear();
-
         isGameInProgress = false;
     }
 
     public void StartGame()
     {
         if (Players.Count < 2) { return; }
-
         isGameInProgress = true;
-
-        ServerChangeScene("First");
+        // ServerChangeScene("First");
     }
 
-    public override void OnServerSceneChanged(string newSceneName)
-    {
-        // From menu to game
-        if (SceneManager.GetActiveScene().name.StartsWith("First"))
-        {   
-            Debug.Log("work1");
-            for (int i = Players.Count - 1; i >= 0; i--)
-            {
-                var conn = Players[i].connectionToClient;
-                var gameplayerInstance = Instantiate(gamePlayerPrefab);
-                
-                NetworkServer.Destroy(conn.identity.gameObject);
 
-                NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
-            }
-        }
-
-    }
-
-    public override void OnServerAddPlayer(NetworkConnection conn)
-    {
+    public override void OnServerAddPlayer(NetworkConnection conn) {
         base.OnServerAddPlayer(conn);
-
         RTSPlayer player = conn.identity.GetComponent<RTSPlayer>();
-
         Players.Add(player);
-
-        player.SetDisplayName($"Player {Players.Count}");
-
-
+        player.SetDisplayName($"Student {Players.Count}");
         player.SetPartyOwner(Players.Count == 1);
     }
-
-
 
     #endregion
 
     #region Client
 
-    public override void OnClientConnect(NetworkConnection conn)
-    {
+    public override void OnClientConnect(NetworkConnection conn) {
         base.OnClientConnect(conn);
 
         ClientOnConnected?.Invoke();
     }
 
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
+    public override void OnClientDisconnect(NetworkConnection conn) {
         base.OnClientDisconnect(conn);
 
         ClientOnDisconnected?.Invoke();

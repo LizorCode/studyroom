@@ -134,9 +134,9 @@ public class NoteSystem : MonoBehaviour     //класс, в котором оп
     }
     public void Close()         //метод включающий управление персонажем, если деактивировано меню просмотра лекций
     {
-        GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().enableCameraMovement = true;  //включить камеру
-        GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().playerCanMove = true;  //включить движение
-        GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().autoCrosshair = true;  //включить прицел
+        // GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().enableCameraMovement = true;  //включить камеру
+        // GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().playerCanMove = true;  //включить движение
+        // GameObject.Find("FirstPerson-AIO").GetComponent<FirstPersonAIO>().autoCrosshair = true;  //включить прицел
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 

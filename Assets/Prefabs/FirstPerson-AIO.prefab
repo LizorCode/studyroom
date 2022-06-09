@@ -685,10 +685,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e87e5ac414d93d74cab079d1c1539df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanseToSee: 4
-  Slide1: {fileID: 0}
-  Slide2: {fileID: 0}
-  Slide3: {fileID: 0}
+  syncMode: 0
+  syncInterval: 0.1
+  NumSlide: 3
+  Slides:
+  - {fileID: 2226675844145118010, guid: 0c17f908833cc1242a2e97cdeae21680, type: 3}
+  - {fileID: 6594584889153872887, guid: 2708a1d310ee1b14999a04ced6db9478, type: 3}
+  - {fileID: 6991977736455026570, guid: f2abb070662e445479617b613b19820a, type: 3}
 --- !u!114 &457942008861125641
 MonoBehaviour:
   m_ObjectHideFlags: 0

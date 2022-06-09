@@ -1,51 +1,68 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class SlideControl : MonoBehaviour
+public class SlideControl : NetworkBehaviour
 {
-    // Start is called before the first frame update
 
-    public float distanseToSee;
-    RaycastHit whatIHit;
-    public GameObject Slide1, Slide2, Slide3;
-    //Collider ActiveCollider1, ActiveCollider2;
+    // public float distanseToSee;
+    // RaycastHit whatIHit;
 
-    void Start()
-    {
-        //ActiveCollider1 = GetComponent<Collider>();
-        //ActiveCollider2 = GetComponent<Collider>();
-    }
+    public int NumSlide;
+    public GameObject[] Slides;
 
-    // Update is called once per frame
+    [SyncVar(hook = nameof(SyncSlide))] //задаем метод, который будет выполняться при синхронизации переменной
+    int _SyncSlide;
+    
     void Update()
     {
-        Debug.DrawRay(this.transform.position, this.transform.forward * distanseToSee, Color.magenta);
-        if (Physics.Raycast(this.transform.position,this.transform.forward, out whatIHit, distanseToSee))
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+        // if (!hasAuthority) //проверяем, есть ли у нас права изменять этот объект
+        // {
+
+            if (NumSlide==0)
             {
-                if (whatIHit.collider.tag == "Slider")
-                {
-                    if (Slide1.activeSelf == true) 
-                    {
-                        Slide1.SetActive(false); 
-                        Slide1.GetComponent<BoxCollider>().enabled = false;  
-                    }
-                    else if (Slide2.activeSelf == true) 
-                    { 
-                        Slide2.SetActive(false);
-                        Slide2.GetComponent<BoxCollider>().enabled = false;
-                    }
-                    else if (Slide3.activeSelf == true)
-                    { 
-                        Slide1.SetActive(true);
-                        Slide1.GetComponent<BoxCollider>().enabled = true;
-                        Slide2.SetActive(true);
-                        Slide2.GetComponent<BoxCollider>().enabled = true;
-                    };
-                }
+                NumSlide=3;
             }
-        }
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                if (isServer)
+                    { //если мы являемся сервером, то переходим к непосредственному изменению переменной
+                    SetNumSlide(NumSlide - 1);
+                    Debug.Log("Выполнился метод на сервере  "+ NumSlide); 
+                    Debug.Log("1: "+ Slides[0].activeSelf + " 2: "+ Slides[1].activeSelf + " 3: " + Slides[2].activeSelf);
+                    }
+                else
+                    {
+                    CmdSetNumSlide(NumSlide - 1); 
+                    Debug.Log("Выполнился метод на клиенте  " + NumSlide);
+                    }
+            }
+        // }
+
+        for (int i=0; i<Slides.Length; i++)
+        {
+            Slides[i].SetActive(!(NumSlide-1 < i));         
+        }  
+
+    }
+
+
+    void SyncSlide(int oldValue, int newValue) 
+    {
+        NumSlide = newValue;
+    }
+
+    [Server] //обозначаем, что этот метод будет вызываться и выполняться только на сервере
+    public void SetNumSlide(int newValue)
+    {
+      _SyncSlide = newValue;
+    }
+
+    [Command] //обозначаем, что этот метод должен будет выполняться на сервере по запросу клиента
+    public void CmdSetNumSlide(int newValue) //обязательно ставим Cmd в начале названия метода
+    {
+        SetNumSlide(newValue); //переходим к непосредственному изменению переменной
     }
 }
